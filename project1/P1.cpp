@@ -1,13 +1,14 @@
 #include <bits/stdc++.h>
-#include <algorithm>
+
 using namespace std;
 
 #define UNVISITED -1
 #define INF numeric_limits<int>::max()
+#define _ ios_base::sync_with_stdio(false)
 
 vector<vector<int> > G;
-vector<int> num, low, S, visited, sccG;
-int SCC, N, M, dfsNC, f = 1, connected;
+vector<int> num, low, visited, sccG, S;
+int SCC, N, M, dfsNC;
 typedef vector<int>::iterator vi;
 unordered_map<int, int> small;
 
@@ -26,22 +27,23 @@ void tarjan(int u) {
 
   if (low[u] == num[u]) {
     SCC++;
-    int min = INF;
+    int mini = INF;
     while (1) {
       int v = S.back();
       S.pop_back();
       visited[v] = 0;
       sccG[v] = SCC;
-      min = v < min ? v : min;
+      mini = min(mini,v);
       if (u == v) {
-        small.insert(make_pair(SCC, min));
+        small.insert(make_pair(SCC, mini));
         break;
       }
     }
   }
-}
 
+}
 int main() {
+  _;
   scanf("%d", &N);
   scanf("%d", &M);
 
@@ -59,7 +61,6 @@ int main() {
   for (int i = 0; i < N; i++)
     if (num[i] == UNVISITED) tarjan(i);
 
-  cout << SCC << endl;
   set<pair<int, int> > connections;
   for (int u = 0; u < N; u++)
     for (vi v = G[u].begin(); v != G[u].end(); v++)
@@ -68,7 +69,7 @@ int main() {
                                      small.find(sccG[*v])->second + 1));
       }
 
-  cout << connections.size() << endl;
+  cout << SCC << endl << connections.size() << endl;
   for (auto elem : connections) {
     cout << elem.first << " " << elem.second << endl;
   }
